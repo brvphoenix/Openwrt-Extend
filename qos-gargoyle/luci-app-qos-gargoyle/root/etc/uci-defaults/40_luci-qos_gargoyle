@@ -1,0 +1,17 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@qos_gargoyle[-1]
+	add ucitrack qos_gargoyle
+	set ucitrack.@qos_gargoyle[-1].init=qos_gargoyle
+	commit ucitrack
+	delete firewall.qos_gargoyle
+	set firewall.qos_gargoyle=include
+	set firewall.qos_gargoyle.type=script
+	set firewall.qos_gargoyle.path=/var/etc/qos_gargoyle.include
+	set firewall.qos_gargoyle.reload=1
+	commit firewall
+EOF
+
+rm -rf /tmp/luci-modulecache /tmp/luci-indexcache
+exit 0
